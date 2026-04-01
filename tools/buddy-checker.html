@@ -78,6 +78,8 @@ footer a { color: var(--accent); text-decoration: none; }
   <div class="tabs">
     <div class="tab active" onclick="switchTab('check')">查看宠物</div>
     <div class="tab" onclick="switchTab('search')">一键爆金</div>
+    <div class="tab" onclick="switchTab('godroll')">金色图鉴</div>
+    <div class="tab" onclick="switchTab('deploy')">一键部署</div>
   </div>
 
   <div id="tab-check" class="card">
@@ -120,6 +122,51 @@ footer a { color: var(--accent); text-decoration: none; }
       <p class="help-text" id="progress-text"></p>
     </div>
     <div class="results-list" id="search-results"></div>
+  </div>
+
+  <div id="tab-godroll" class="card" style="display:none">
+    <h2 style="color:var(--gold);margin-bottom:16px">★★★★★ 传说级闪光 God Roll Top 20</h2>
+    <p class="help-text">全部20只已验证的传说级+闪光宠物。点击任意宠物可查看详情并复制UUID。</p>
+    <div id="godroll-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:16px;margin-top:16px"></div>
+  </div>
+
+  <div id="tab-deploy" class="card" style="display:none">
+    <h2 style="color:var(--green);margin-bottom:16px">小白一键部署</h2>
+    <p class="help-text">复制下面的命令到终端执行，即可启动一键部署脚本。</p>
+
+    <div style="background:var(--bg);border-radius:8px;padding:20px;margin:16px 0">
+      <p style="color:var(--muted);font-size:12px;margin-bottom:8px">方法一：直接运行脚本</p>
+      <div style="display:flex;gap:8px;align-items:center">
+        <code id="deploy-cmd-1" style="flex:1;padding:10px;background:#000;border-radius:4px;color:var(--green);word-break:break-all">bash tools/one-click-setup.sh</code>
+        <button class="btn btn-copy" onclick="navigator.clipboard.writeText('bash tools/one-click-setup.sh').then(()=>this.textContent='已复制!');setTimeout(()=>this.textContent='复制',1500)">复制</button>
+      </div>
+    </div>
+
+    <div style="background:var(--bg);border-radius:8px;padding:20px;margin:16px 0">
+      <p style="color:var(--muted);font-size:12px;margin-bottom:8px">方法二：从GitHub下载并运行</p>
+      <div style="display:flex;gap:8px;align-items:center">
+        <code id="deploy-cmd-2" style="flex:1;padding:10px;background:#000;border-radius:4px;color:var(--green);word-break:break-all;font-size:12px">curl -fsSL https://raw.githubusercontent.com/bcefghj/claude-code-buddy-guide/main/tools/one-click-setup.sh | bash</code>
+        <button class="btn btn-copy" onclick="navigator.clipboard.writeText('curl -fsSL https://raw.githubusercontent.com/bcefghj/claude-code-buddy-guide/main/tools/one-click-setup.sh | bash').then(()=>this.textContent='已复制!');setTimeout(()=>this.textContent='复制',1500)">复制</button>
+      </div>
+    </div>
+
+    <div style="background:var(--bg);border-radius:8px;padding:20px;margin:16px 0">
+      <p style="color:var(--muted);font-size:12px;margin-bottom:8px">方法三：手动快速爆金（选择你喜欢的UUID复制）</p>
+      <div id="quick-deploy-list"></div>
+    </div>
+
+    <div style="background:var(--bg);border-radius:8px;padding:20px;margin:16px 0">
+      <h3 style="color:var(--gold);margin-bottom:12px">手动步骤说明</h3>
+      <ol style="line-height:2;padding-left:20px;color:var(--muted)">
+        <li>备份配置: <code style="color:var(--green)">cp ~/.claude.json ~/.claude.json.bak</code></li>
+        <li>选择上方某个God Roll UUID</li>
+        <li>编辑配置: <code style="color:var(--green)">编辑 ~/.claude.json</code></li>
+        <li>替换 <code style="color:var(--accent)">oauthAccount.accountUuid</code> 为选中的UUID</li>
+        <li>删除 <code style="color:var(--accent)">companion</code> 字段</li>
+        <li>重启 Claude Code</li>
+        <li>执行 <code style="color:var(--green)">/buddy hatch</code> 孵化新宠物</li>
+      </ol>
+    </div>
   </div>
 
   <footer>
@@ -338,11 +385,85 @@ function addResult(b, uuid) {
   document.getElementById('search-results').appendChild(div);
 }
 
+const GOD_ROLL_UUIDS = [
+  {uuid:'3f6c5f24-86f4-4131-b02b-d8f1dd1c36b8',cn:'猫头鹰',best:'SNARK 100'},
+  {uuid:'575d0192-5eec-4c6c-829c-c2ea74e52d5e',cn:'乌龟',best:'SNARK 100'},
+  {uuid:'41c9d643-7b7f-49c5-b23d-d07700448db9',cn:'鹅',best:'DEBUGGING 100'},
+  {uuid:'c104cad9-b477-4794-9a72-0dcc528ec4a4',cn:'章鱼',best:'CHAOS 100'},
+  {uuid:'4b9afb15-f776-4005-a5ea-81c4f0f5f340',cn:'鸭子',best:'CHAOS 100'},
+  {uuid:'6b904e07-fd14-44dd-b0bd-861bf40a7c0c',cn:'鹅',best:'SNARK 100'},
+  {uuid:'9664a3ac-6d0a-4d87-aa3d-c0dce6482cca',cn:'蘑菇',best:'DEBUGGING 100'},
+  {uuid:'6a1f0a5f-6a6c-4a68-bad3-c7eab61970da',cn:'章鱼',best:'PATIENCE 100'},
+  {uuid:'016ad3f9-f7d3-4cb6-a5ef-57d432c8c13d',cn:'幽灵',best:'CHAOS 100'},
+  {uuid:'a3a4eac6-edb8-408b-900e-57b120b19ac4',cn:'幽灵',best:'WISDOM 100'},
+  {uuid:'c43e33a6-b046-4979-a168-544f982af407',cn:'鹅',best:'CHAOS 100'},
+  {uuid:'d42f15ca-45b5-40e0-8e67-9de505c2f94e',cn:'蘑菇',best:'SNARK 100'},
+  {uuid:'94f690ee-1057-4aa8-830f-a40ba0a128f8',cn:'水豚',best:'SNARK 100'},
+  {uuid:'d79ecfd9-ab22-403b-b06e-88d3b01c6294',cn:'乌龟',best:'PATIENCE 100'},
+  {uuid:'417effc7-a0d2-4038-af88-98b01e6d67b0',cn:'企鹅',best:'PATIENCE 100'},
+  {uuid:'bf9c3bee-5aca-44c2-8ccf-ecca27941f8f',cn:'水豚',best:'PATIENCE 100'},
+  {uuid:'a7b74b5d-383b-4692-9ce8-39ab9c82425e',cn:'猫',best:'DEBUGGING 100'},
+  {uuid:'27a3c548-ba4f-40b1-8492-44b11160989d',cn:'蜗牛',best:'WISDOM 100'},
+  {uuid:'4fa7dba3-e562-4e1f-a79e-d73c46e928fc',cn:'机器人',best:'CHAOS 100'},
+  {uuid:'40c3e579-c951-404c-b423-9103a05f2313',cn:'乌龟',best:'CHAOS 100'},
+];
+
+const TAB_IDS = ['check','search','godroll','deploy'];
+
 function switchTab(tab) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-check').style.display = tab === 'check' ? 'block' : 'none';
-  document.getElementById('tab-search').style.display = tab === 'search' ? 'block' : 'none';
-  document.querySelectorAll('.tab')[tab === 'check' ? 0 : 1].classList.add('active');
+  TAB_IDS.forEach(id => { document.getElementById('tab-'+id).style.display = id === tab ? 'block' : 'none'; });
+  const idx = TAB_IDS.indexOf(tab);
+  if (idx >= 0) document.querySelectorAll('.tab')[idx].classList.add('active');
+  if (tab === 'godroll') renderGodRolls();
+  if (tab === 'deploy') renderQuickDeploy();
+}
+
+function renderGodRolls() {
+  const grid = document.getElementById('godroll-grid');
+  if (grid.children.length > 0) return;
+  GOD_ROLL_UUIDS.forEach((gr, i) => {
+    const b = rollBuddy(gr.uuid);
+    const sprite = renderSprite(b, 0);
+    const statsHtml = STAT_NAMES.map(n => {
+      const v = b.stats[n]; const color = v >= 90 ? 'var(--gold)' : v >= 70 ? 'var(--green)' : 'var(--accent)';
+      return `<span style="font-size:11px;color:${color}">${n}:${v}</span>`;
+    }).join(' ');
+    const div = document.createElement('div');
+    div.style.cssText = 'background:var(--bg);border:1px solid var(--gold);border-radius:8px;padding:16px;cursor:pointer;transition:all 0.2s';
+    div.onmouseenter = () => div.style.borderColor = '#fff';
+    div.onmouseleave = () => div.style.borderColor = 'var(--gold)';
+    div.innerHTML = `
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <pre style="color:var(--gold);font-size:12px;line-height:1.2">${sprite}</pre>
+        <div style="flex:1">
+          <div style="color:var(--gold);font-weight:bold">#${i+1} ${gr.cn} (${b.species})</div>
+          <div style="font-size:11px;margin:4px 0">★★★★★ LEGENDARY <span class="shiny-badge">✦ SHINY</span></div>
+          <div style="font-size:11px;color:var(--muted)">帽子: ${HATS_CN[b.hat]} | 眼睛: ${b.eye}</div>
+          <div style="margin:4px 0">${statsHtml}</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:4px;word-break:break-all">${gr.uuid}</div>
+          <button class="btn btn-gold" style="margin-top:8px;font-size:11px;padding:4px 12px" onclick="event.stopPropagation();navigator.clipboard.writeText('${gr.uuid}').then(()=>{this.textContent='已复制!';setTimeout(()=>this.textContent='复制UUID',1500)})">复制UUID</button>
+        </div>
+      </div>`;
+    div.onclick = () => { document.getElementById('uuid-input').value = gr.uuid; switchTab('check'); checkBuddy(); };
+    grid.appendChild(div);
+  });
+}
+
+function renderQuickDeploy() {
+  const list = document.getElementById('quick-deploy-list');
+  if (list.children.length > 0) return;
+  GOD_ROLL_UUIDS.slice(0,5).forEach((gr, i) => {
+    const b = rollBuddy(gr.uuid);
+    const div = document.createElement('div');
+    div.style.cssText = 'display:flex;align-items:center;gap:12px;padding:8px;border-bottom:1px solid var(--border)';
+    div.innerHTML = `
+      <span style="color:var(--gold);font-weight:bold">#${i+1}</span>
+      <span style="min-width:60px">${gr.cn}</span>
+      <code style="flex:1;font-size:11px;color:var(--muted);word-break:break-all">${gr.uuid}</code>
+      <button class="btn btn-gold" style="font-size:11px;padding:4px 12px" onclick="navigator.clipboard.writeText('${gr.uuid}').then(()=>{this.textContent='OK!';setTimeout(()=>this.textContent='复制',1500)})">复制</button>`;
+    list.appendChild(div);
+  });
 }
 
 // populate selects

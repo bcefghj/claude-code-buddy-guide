@@ -385,7 +385,83 @@ cp ~/.claude.json ~/.claude.json.backup
 
 ### 自定义 ASCII 精灵
 
-参见 [自定义精灵指南](custom/personality-editor.md) 和 [自定义精灵模板](custom/custom-sprites.js)，内置了哆啦A梦、皮卡丘等卡通角色的ASCII模板。
+参见 [自定义精灵指南](custom/personality-editor.md) 和 [自定义精灵模板](custom/custom-sprites.js)，内置了 **15+ 种**卡通角色和动物的ASCII模板：
+
+**卡通人物**: 哆啦A梦、皮卡丘、龙猫、卡比、史努比、Hello Kitty
+
+**动物系列**: 柴犬、熊猫、独角兽、狐狸、树懒、鲸鱼、小恐龙、仓鼠、小熊、蝴蝶、小企鹅、小白兔
+
+**特殊角色**: 外星人、南瓜头
+
+运行 `node custom/custom-sprites.js` 可查看全部精灵预览。
+
+---
+
+## 小白一键部署
+
+### 最简单的方式（推荐）
+
+```bash
+bash tools/one-click-setup.sh
+```
+
+脚本会显示交互菜单：
+
+```
+╔══════════════════════════════════════════════════════╗
+║   ★★★★★  Claude Code Buddy 一键部署  ★★★★★       ║
+╚══════════════════════════════════════════════════════╝
+
+  1. 查看当前宠物信息
+  2. 一键爆金 - 获得传说级闪光宠物
+  3. 自定义宠物名字和个性
+  4. 恢复原始配置
+  5. 查看 God Roll 列表
+  0. 退出
+```
+
+### 一键爆金流程
+
+1. 运行脚本，选择 `2. 一键爆金`
+2. 从 Top 20 God Roll 列表中选择你喜欢的宠物
+3. 脚本自动备份配置 → 替换UUID → 清除旧宠物数据
+4. 重启 Claude Code，输入 `/buddy hatch` 孵化
+
+> 全程自动备份，支持一键恢复，零风险操作！
+
+---
+
+## 金色宠物图鉴
+
+Top 12 传说级闪光金色宠物展示卡（完整20只见 [god-rolls.md](god-rolls.md)）：
+
+| 编号 | 物种 | 帽子 | 最强属性 | 预览 |
+|------|------|------|----------|------|
+| #1 | 猫头鹰 Owl | 光环 | SNARK 100 | ![](comics/gold-pets/gold-01-owl-halo.png) |
+| #2 | 乌龟 Turtle | 王冠 | SNARK 100 | ![](comics/gold-pets/gold-02-turtle-crown.png) |
+| #3 | 鹅 Goose | 毛线帽 | DEBUG 100 | ![](comics/gold-pets/gold-03-goose-beanie.png) |
+| #4 | 章鱼 Octopus | 无 | CHAOS 100 | ![](comics/gold-pets/gold-04-octopus.png) |
+| #5 | 鸭子 Duck | 巫师帽 | CHAOS 100 | ![](comics/gold-pets/gold-05-duck-wizard.png) |
+| #7 | 蘑菇 Mushroom | 无 | DEBUG 100 | ![](comics/gold-pets/gold-07-mushroom.png) |
+| #9 | 幽灵 Ghost | 巫师帽 | CHAOS 100 | ![](comics/gold-pets/gold-09-ghost-wizard.png) |
+| #13 | 水豚 Capybara | 王冠 | SNARK 100 | ![](comics/gold-pets/gold-13-capybara-crown.png) |
+| #15 | 企鹅 Penguin | 小鸭子 | PATIENCE 100 | ![](comics/gold-pets/gold-15-penguin-tinyduck.png) |
+| #17 | 猫 Cat | 光环 | DEBUG 100 | ![](comics/gold-pets/gold-17-cat-halo.png) |
+| #18 | 蜗牛 Snail | 礼帽 | WISDOM 100 | ![](comics/gold-pets/gold-18-snail-tophat.png) |
+| #19 | 机器人 Robot | 巫师帽 | CHAOS 100 | ![](comics/gold-pets/gold-19-robot-wizard.png) |
+
+---
+
+## 漫画展示
+
+| 漫画 | 说明 |
+|------|------|
+| ![入门](comics/01-getting-started.png) | 宠物系统入门 |
+| ![爆金](comics/02-gold-rush.png) | 一键爆金教程 |
+| ![一键](comics/05-one-click-gold.png) | 小白一键部署 |
+| ![自定义](comics/06-custom-pet.png) | 自定义宠物创建 |
+| ![集合](comics/07-pet-gallery.png) | 全18种宠物大集合 |
+| ![收藏](comics/08-shiny-collection.png) | 闪光宠物收藏 |
 
 ---
 
@@ -406,13 +482,6 @@ cp ~/.claude.json ~/.claude.json.backup
 | claude-pet (IMMINJU) | Tauri桌面宠物小部件 | [github.com/IMMINJU/claude-pet](https://github.com/IMMINJU/claude-pet) |
 | claude-pet (scm1400) | 可自定义皮肤的桌面宠物 | [github.com/scm1400/claude-mama](https://github.com/scm1400/claude-mama) |
 | claude-pet-companion | Python桌面宠物，10阶进化 | [pypi.org/project/claude-pet-companion](https://pypi.org/project/claude-pet-companion/2.4.0/) |
-
-### Claude Code Skills 推荐
-
-| 技能包 | 说明 | 安装 |
-|--------|------|------|
-| baoyu-skills | 宝玉技能包，小红书图文/信息图等 | `npx skills add jimliu/baoyu-skills` |
-| naruto-skills | 火影技能包，漫画创作/开发工具 | `npx skills add zlh-428/naruto-skills` |
 
 ---
 
@@ -459,24 +528,28 @@ cp ~/.claude.json ~/.claude.json.backup
 
 ```
 claude-code-buddy-guide/
-├── README.md                 ← 你正在看的这个文件
-├── god-rolls.md              ← Top 20 God Roll UUID 完整列表
+├── README.md                      ← 你正在看的这个文件
+├── god-rolls.md                   ← Top 20 God Roll UUID 完整列表
 ├── docs/
-│   ├── guide.html            ← HTML版教程（可浏览器打印为PDF）
-│   └── pet-encyclopedia.md   ← 18种宠物完整图鉴
+│   ├── guide.html                 ← HTML版教程（可浏览器打印为PDF）
+│   └── pet-encyclopedia.md        ← 18种宠物完整图鉴
 ├── tools/
-│   ├── buddy-roller.js       ← 暴力破解传说级UUID工具
-│   ├── buddy-checker.html    ← 浏览器版宠物查看器
-│   └── quick-swap.sh         ← 一键换宠脚本
+│   ├── one-click-setup.sh         ← 小白一键部署脚本（推荐）
+│   ├── buddy-roller.js            ← 暴力破解传说级UUID工具
+│   ├── buddy-checker.html         ← 浏览器版宠物查看器+爆金搜索
+│   └── quick-swap.sh              ← 一键换宠脚本
 ├── custom/
-│   ├── custom-sprites.js     ← 自定义ASCII精灵模板
-│   ├── doraemon-sprite.txt   ← 哆啦A梦ASCII精灵
-│   └── personality-editor.md ← 自定义性格编辑指南
+│   ├── custom-sprites.js          ← 15+种自定义ASCII精灵模板
+│   ├── doraemon-sprite.txt        ← 哆啦A梦ASCII精灵
+│   └── personality-editor.md      ← 自定义性格编辑指南
 ├── comics/
-│   ├── 01-getting-started.png  ← 入门漫画
-│   ├── 02-gold-rush.png        ← 爆金漫画
-│   ├── 03-baoyu-skills.png     ← baoyu-skills漫画
-│   └── 04-naruto-skills.png    ← naruto-skills漫画
+│   ├── 01-getting-started.png     ← 入门漫画
+│   ├── 02-gold-rush.png           ← 爆金漫画
+│   ├── 05-one-click-gold.png      ← 小白一键部署漫画
+│   ├── 06-custom-pet.png          ← 自定义宠物漫画
+│   ├── 07-pet-gallery.png         ← 全18种宠物大集合
+│   ├── 08-shiny-collection.png    ← 闪光宠物收藏漫画
+│   └── gold-pets/                 ← 12张金色宠物全息卡片
 └── LICENSE
 ```
 
@@ -488,8 +561,8 @@ claude-code-buddy-guide/
 - [dev.to radarlog](https://dev.to/_53fb7c03dd741a6124e4e/i-tore-apart-the-claude-code-source-code-33-2jb1) - 源码深度分析
 - [Claude Buddy Checker](https://claudebuddychecker.netlify.app/) - 在线宠物查看器
 - [terryso/ccpet](https://github.com/terryso/ccpet) - 状态栏电子宠物
-- [JimLiu/baoyu-skills](https://github.com/JimLiu/baoyu-skills) - 宝玉技能包
-- [zlh-428/naruto-skills](https://github.com/zlh-428/naruto-skills) - 火影技能包
+- [dyz2102/buddy-card](https://github.com/dyz2102/buddy-card) - 全息交易卡生成器
+- [ywong137/claude-code-custom-art](https://github.com/ywong137/claude-code-custom-art) - 自定义启动艺术
 
 ## License
 
