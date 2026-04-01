@@ -16,6 +16,7 @@
 - [爆金教程：获得传说级宠物](#爆金教程获得传说级宠物)
 - [自定义宠物](#自定义宠物)
 - [社区工具推荐](#社区工具推荐)
+- [实际运行截图](#实际运行截图)
 - [常见问题 FAQ](#常见问题-faq)
 
 ---
@@ -485,6 +486,50 @@ Top 12 传说级闪光金色宠物展示卡（完整20只见 [god-rolls.md](god-
 
 ---
 
+## 实际运行截图
+
+以下为项目中各工具的**真实运行结果**（终端输出和可视化截图），验证全部代码功能正常。
+
+### 你的宠物信息 + God Roll 验证
+
+![宠物信息](screenshots/screenshot-01-pet-info.png)
+
+使用 Node.js 复现 `companion.ts` 算法，查看你的真实宠物属性，并验证 God Roll #1（猫头鹰）和 #17（猫）确实为 ★★★★★ Legendary + ✦ Shiny。
+
+### buddy-roller.js 爆金搜索
+
+![爆金搜索](screenshots/screenshot-02-buddy-roller.png)
+
+运行 `node tools/buddy-roller.js --rarity legendary --shiny --limit 3`，仅 42,387 次尝试即找到 3 只传说级闪光宠物。
+
+### 全部 20 只 God Roll 批量验证
+
+![God Roll验证](screenshots/screenshot-03-godroll-verify.png)
+
+逐一验证 `god-rolls.md` 中全部 20 个 UUID，**全部通过** —— 均为 ★★★★★ Legendary + ✦ Shiny。
+
+### 15+ 种自定义精灵模板
+
+![自定义精灵](screenshots/screenshot-04-custom-sprites.png)
+
+运行 `node custom/custom-sprites.js`，展示哆啦A梦、皮卡丘、柴犬、熊猫、独角兽等 15+ 种自定义 ASCII 精灵。
+
+### 一键部署脚本
+
+![一键部署](screenshots/screenshot-05-one-click-setup.png)
+
+运行 `bash tools/one-click-setup.sh`，展示交互菜单、God Roll 选择和一键爆金流程。
+
+### 全 18 种原版宠物
+
+![全18种宠物](screenshots/screenshot-06-all-18-species.png)
+
+Claude Code 源码中全部 18 种宠物的 ASCII 精灵预览。
+
+> 💡 **查看更多**：打开 `screenshots/terminal-screenshots.html` 可以看到带颜色高亮的完整终端输出。
+
+---
+
 ## 常见问题 FAQ
 
 ### Q: 宠物系统什么时候上线的？
@@ -550,6 +595,15 @@ claude-code-buddy-guide/
 │   ├── 07-pet-gallery.png         ← 全18种宠物大集合
 │   ├── 08-shiny-collection.png    ← 闪光宠物收藏漫画
 │   └── gold-pets/                 ← 12张金色宠物全息卡片
+├── screenshots/
+│   ├── screenshot-01-pet-info.png        ← 宠物信息截图
+│   ├── screenshot-02-buddy-roller.png    ← 爆金搜索截图
+│   ├── screenshot-03-godroll-verify.png  ← God Roll验证截图
+│   ├── screenshot-04-custom-sprites.png  ← 自定义精灵截图
+│   ├── screenshot-05-one-click-setup.png ← 一键部署截图
+│   ├── screenshot-06-all-18-species.png  ← 全18种宠物截图
+│   ├── terminal-screenshots.html         ← 带颜色的终端截图HTML
+│   └── *.txt                             ← 原始终端输出文本
 └── LICENSE
 ```
 

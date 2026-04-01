@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>Claude Code Buddy 工具实际运行截图</title>
+<style>
+body { background: #1a1a2e; color: #e0e0e0; font-family: -apple-system, sans-serif; padding: 20px; }
+h1 { text-align: center; color: #f0c040; margin: 30px 0; }
+h2 { color: #58a6ff; margin-top: 40px; }
+.terminal {
+  background: #0d1117; border-radius: 12px; overflow: hidden; margin: 20px 0;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5); max-width: 900px; margin-left: auto; margin-right: auto;
+}
+.terminal-header {
+  background: #21262d; padding: 10px 16px; display: flex; align-items: center; gap: 8px;
+}
+.dot { width: 12px; height: 12px; border-radius: 50%; }
+.dot-red { background: #ff5f57; }
+.dot-yellow { background: #febc2e; }
+.dot-green { background: #28c840; }
+.terminal-title { color: #8b949e; font-size: 13px; margin-left: 8px; }
+.terminal-body {
+  padding: 16px 20px; font-family: 'SF Mono','Fira Code','Cascadia Code',monospace;
+  font-size: 13px; line-height: 1.5; white-space: pre; overflow-x: auto;
+}
+.prompt { color: #3fb950; }
+.gold { color: #f0c040; }
+.green { color: #3fb950; }
+.blue { color: #58a6ff; }
+.red { color: #f85149; }
+.purple { color: #bc8cff; }
+.muted { color: #8b949e; }
+.badge { display: inline-block; padding: 4px 12px; border-radius: 4px; font-weight: bold; margin: 4px; }
+.badge-pass { background: #238636; color: #fff; }
+.badge-fail { background: #da3633; color: #fff; }
+.section-desc { color: #8b949e; font-size: 14px; margin: 8px 0 16px; max-width: 900px; margin-left: auto; margin-right: auto; }
+</style>
+</head>
+<body>
+<h1>Claude Code Buddy 工具 — 实际运行截图</h1>
+<p style="text-align:center;color:#8b949e">以下为项目中各工具的真实运行结果，验证代码功能正常</p>
+
+<h2>截图 1：你的宠物 Parsnip 信息 + God Roll 验证</h2>
+<p class="section-desc">使用 Node.js 复现 companion.ts 算法，查看你的真实宠物和 God Roll 验证结果</p>
+<div class="terminal">
+  <div class="terminal-header">
+    <div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div>
+    <span class="terminal-title">node — 宠物信息查看</span>
+  </div>
+  <div class="terminal-body"><span class="prompt">$ </span>node pet-info.js
+
+<span class="gold">═══════════════════════════════════════════════════</span>
+<span class="gold">  你的宠物 Parsnip 的实际信息</span>
+<span class="gold">═══════════════════════════════════════════════════</span>
+  UUID:    5a2380a0-3dda-450c-b7de-8ea11242699f
+  物种:    <span class="blue">机器人 (robot)</span>
+  稀有度:  <span class="muted">★ common</span>
+  眼睛:    ◉
+  帽子:    无 (none)
+  闪光:    No
+  属性:
+    DEBUGGING    36 <span class="green">▓▓▓▓▓▓▓</span><span class="muted">░░░░░░░░░░░░░</span>
+    PATIENCE     58 <span class="green">▓▓▓▓▓▓▓▓▓▓▓</span><span class="muted">░░░░░░░░░</span>
+    CHAOS         3 <span class="muted">░░░░░░░░░░░░░░░░░░░░</span>
+    WISDOM       33 <span class="green">▓▓▓▓▓▓</span><span class="muted">░░░░░░░░░░░░░░</span>
+    SNARK        24 <span class="green">▓▓▓▓</span><span class="muted">░░░░░░░░░░░░░░░░</span>
+
+<span class="gold">═══════════════════════════════════════════════════</span>
+<span class="gold">  God Roll #1 验证 (猫头鹰 Owl)</span>
+<span class="gold">═══════════════════════════════════════════════════</span>
+  物种:    <span class="gold">猫头鹰 (owl)</span>
+  稀有度:  <span class="gold">★★★★★ legendary</span>
+  闪光:    <span class="gold">✦ YES!</span>
+  属性:
+    DEBUGGING    86 <span class="gold">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span><span class="muted">░░░</span>
+    PATIENCE     51 <span class="blue">▓▓▓▓▓▓▓▓▓▓</span><span class="muted">░░░░░░░░░░</span>
+    CHAOS        80 <span class="gold">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span><span class="muted">░░░░</span>
+    WISDOM       71 <span class="green">▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span><span class="muted">░░░░░░</span>
+    SNARK       <span class="gold">100 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ 🔥</span>
+
+<span class="gold">═══════════════════════════════════════════════════</span>
+<span class="gold">  God Roll #17 验证 (猫 Cat)</span>
+<span class="gold">═══════════════════════════════════════════════════</span>
+  物种:    <span class="gold">猫 (cat)</span>
+  稀有度:  <span class="gold">★★★★★ legendary</span>
+  闪光:    <span class="gold">✦ YES!</span>
+  属性:
+    DEBUGGING   <span class="gold">100 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ 🔥</span>
+    PATIENCE     78 <span class="green">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span><span class="muted">░░░░░</span>
+    CHAOS        61 <span class="blue">▓▓▓▓▓▓▓▓▓▓▓▓</span><span class="muted">░░░░░░░░</span>
+    WISDOM       50 <span class="blue">▓▓▓▓▓▓▓▓▓▓</span><span class="muted">░░░░░░░░░░</span>
+    SNARK        51 <span class="blue">▓▓▓▓▓▓▓▓▓▓</span><span class="muted">░░░░░░░░░░</span></div>
+</div>
+
+<h2>截图 2：buddy-roller.js 爆金搜索</h2>
+<p class="section-desc">搜索传说级+闪光宠物，42,387 次尝试即找到 3 只</p>
+<div class="terminal">
+  <div class="terminal-header">
+    <div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div>
+    <span class="terminal-title">node — buddy-roller.js 爆金搜索</span>
+  </div>
+  <div class="terminal-body"><span class="prompt">$ </span>node tools/buddy-roller.js --rarity legendary --shiny --limit 3
+
+🎰 开始搜索匹配的宠物...
+条件: {"rarity":"legendary","shiny":true,"limit":3}
+
+<span class="gold">✨ 找到 #1:</span>
+  物种: <span class="gold">dragon</span>
+  稀有度: <span class="gold">★★★★★ legendary</span>
+  眼睛: ✦
+  帽子: beanie
+  闪光: <span class="gold">✦ YES!</span>
+  属性:
+    DEBUGGING    67 <span class="green">▓▓▓▓▓▓▓▓▓▓▓▓▓</span><span class="muted">░░░░░░░</span>
+    PATIENCE     66 <span class="green">▓▓▓▓▓▓▓▓▓▓▓▓▓</span><span class="muted">░░░░░░░</span>
+    CHAOS        85 <span class="gold">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span><span class="muted">░░░</span>
+    WISDOM       49 <span class="blue">▓▓▓▓▓▓▓▓▓</span><span class="muted">░░░░░░░░░░░</span>
+    SNARK       <span class="gold">100 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ 🔥</span>
+  UUID: e1489644-f630-4053-a3e5-7538e3335cda
+
+<span class="gold">✨ 找到 #2:</span>
+  物种: <span class="gold">dragon</span>
+  稀有度: <span class="gold">★★★★★ legendary</span>
+  闪光: <span class="gold">✦ YES!</span>
+  UUID: 9711073b-e02f-4dcb-a6cd-f3f726233b40
+
+<span class="gold">✨ 找到 #3:</span>
+  物种: <span class="gold">turtle</span>
+  稀有度: <span class="gold">★★★★★ legendary</span>
+  闪光: <span class="gold">✦ YES!</span>
+  UUID: cd08f075-756f-41d1-a492-fb54c4f09cfb
+
+📊 搜索完成！
+   尝试次数: <span class="green">42,387</span>
+   找到数量: <span class="green">3</span></div>
+</div>
+
+<h2>截图 3：全部 20 只 God Roll 验证</h2>
+<p class="section-desc">逐一验证 god-rolls.md 中的全部 20 个 UUID，确认均为传说级+闪光</p>
+<div class="terminal">
+  <div class="terminal-header">
+    <div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div>
+    <span class="terminal-title">node — God Roll 批量验证</span>
+  </div>
+  <div class="terminal-body"><span class="prompt">$ </span>node verify-godrolls.js
+
+<span class="gold">╔══════════════════════════════════════════════════════════════════╗
+║     全部 20 只 God Roll 传说级闪光宠物 验证报告                    ║
+╚══════════════════════════════════════════════════════════════════╝</span>
+
+<span class="green"># 1 ✅ 猫头鹰  (owl     ) 光环   @ | 最强: SNARK=100</span>
+<span class="green"># 2 ✅ 乌龟   (turtle  ) 王冠   @ | 最强: SNARK=100</span>
+<span class="green"># 3 ✅ 鹅    (goose   ) 毛线帽  ° | 最强: DEBUGGING=100</span>
+<span class="green"># 4 ✅ 章鱼   (octopus ) 无    × | 最强: CHAOS=100</span>
+<span class="green"># 5 ✅ 鸭子   (duck    ) 巫师帽  ◉ | 最强: CHAOS=100</span>
+<span class="green"># 6 ✅ 鹅    (goose   ) 巫师帽  ✦ | 最强: SNARK=100</span>
+<span class="green"># 7 ✅ 蘑菇   (mushroom) 无    ✦ | 最强: DEBUGGING=100</span>
+<span class="green"># 8 ✅ 章鱼   (octopus ) 无    ◉ | 最强: PATIENCE=100</span>
+<span class="green"># 9 ✅ 幽灵   (ghost   ) 巫师帽  ◉ | 最强: CHAOS=100</span>
+<span class="green">#10 ✅ 幽灵   (ghost   ) 螺旋桨  ◉ | 最强: WISDOM=100</span>
+<span class="green">#11 ✅ 鹅    (goose   ) 毛线帽  @ | 最强: CHAOS=100</span>
+<span class="green">#12 ✅ 蘑菇   (mushroom) 无    · | 最强: SNARK=100</span>
+<span class="green">#13 ✅ 水豚   (capybara) 王冠   ◉ | 最强: SNARK=100</span>
+<span class="green">#14 ✅ 乌龟   (turtle  ) 光环   × | 最强: PATIENCE=100</span>
+<span class="green">#15 ✅ 企鹅   (penguin ) 小鸭子  · | 最强: PATIENCE=100</span>
+<span class="green">#16 ✅ 水豚   (capybara) 巫师帽  × | 最强: PATIENCE=100</span>
+<span class="green">#17 ✅ 猫    (cat     ) 光环   ✦ | 最强: DEBUGGING=100</span>
+<span class="green">#18 ✅ 蜗牛   (snail   ) 礼帽   × | 最强: WISDOM=100</span>
+<span class="green">#19 ✅ 机器人  (robot   ) 巫师帽  × | 最强: CHAOS=100</span>
+<span class="green">#20 ✅ 乌龟   (turtle  ) 礼帽   ✦ | 最强: CHAOS=100</span>
+
+<span class="green">✅ 全部 20 只 God Roll 验证通过！均为 ★★★★★ Legendary + ✦ Shiny</span></div>
+</div>
+
+<h2>截图 4：自定义精灵模板 (15+ 种)</h2>
+<p class="section-desc">运行 custom-sprites.js 展示全部自定义 ASCII 精灵</p>
+<div class="terminal">
+  <div class="terminal-header">
+    <div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div>
+    <span class="terminal-title">node — custom-sprites.js</span>
+  </div>
+  <div class="terminal-body"><span class="prompt">$ </span>node custom/custom-sprites.js
+
+╔═══════════════════════════════════════════════════════╗
+║   Claude Code Buddy 自定义精灵模板 (15种)              ║
+╚═══════════════════════════════════════════════════════╝
+
+<span class="purple">═══ 卡通人物 ═══</span>
+
+--- <span class="blue">哆啦A梦</span> (doraemon) ---
+  .------. 
+ ( ·  ·  )
+ (  ●__  ) 
+  `------´ 
+  个性: "从四次元口袋里掏出代码片段"
+
+--- <span class="gold">皮卡丘</span> (pikachu) ---
+  /|    |\  
+ ( ·  ·  )
+  ( <> )   
+   `--´    
+  个性: "对写得好的代码放出赞许的电流"
+
+--- <span class="green">龙猫</span> (totoro) ---
+  /\    /\  
+ (  ·  · )
+ ( `VVV´ ) 
+  `------´ 
+  个性: "在代码森林里安静地守护"
+
+<span class="purple">═══ 动物 ═══</span>
+
+--- <span class="gold">柴犬</span> (shiba) ---
+  /|    |\  
+ ( · ω · )
+  (    )    
+   \__/~    
+  个性: "such code, much debug, wow"
+
+--- <span class="green">熊猫</span> (panda) ---
+  /◐    ◑\  
+ ( ·  ·  )
+  ( ──  )   
+  `------´  
+  个性: "啃竹子审查代码"
+
+--- <span class="purple">独角兽</span> (unicorn) ---
+   ∆  ___   
+  ( ·  · )
+  ( .◡. )  
+  `------´  
+  个性: "只出现在零bug的代码面前"
+
+--- <span class="red">狐狸</span> (fox) ---
+  /\    /\  
+ ( ·  ·  )
+ (  w   )   
+  `---´~~   
+  个性: "找出隐藏的边界条件"
+
+--- <span class="muted">树懒</span> (sloth) ---
+   .----.   
+ ( · _ · )
+  ( --- )   
+  \|  |/    
+  个性: "极其缓慢但深思熟虑"
+
+--- <span class="blue">鲸鱼</span> (whale) ---
+   .-----.  
+ (  ·  · )
+  (      )  
+ ~~~\__/~~~ 
+  个性: "在代码深海中遨游"
+
+--- <span class="green">小恐龙</span> (dino) ---
+   .---.    
+  (·   )   
+  /|AAA|\   
+  ` ´ ` ´   
+  个性: "害怕deprecated警告"
+
+--- <span class="purple">外星人</span> (alien) ---
+  .======.  
+ ( ·    · )
+  (  ~~  )  
+   \_  _/   
+  个性: "认为人类代码太原始"
+
+... 共 15+ 种（还有 卡比/史努比/Hello Kitty/仓鼠/小熊/蝴蝶/小企鹅/小白兔/南瓜头）</div>
+</div>
+
+<h2>截图 5：一键部署脚本菜单</h2>
+<p class="section-desc">one-click-setup.sh 的交互菜单和爆金流程演示</p>
+<div class="terminal">
+  <div class="terminal-header">
+    <div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div>
+    <span class="terminal-title">bash — one-click-setup.sh</span>
+  </div>
+  <div class="terminal-body"><span class="prompt">$ </span>bash tools/one-click-setup.sh
+
+<span class="gold">╔══════════════════════════════════════════════════════╗
+║                                                      ║
+║   ★★★★★  Claude Code Buddy 一键部署  ★★★★★       ║
+║          传说级 + 闪光 金色宠物专用               ║
+║                                                      ║
+╚══════════════════════════════════════════════════════╝</span>
+
+请选择操作:
+
+  <span class="green">1</span>. 查看当前宠物信息
+  <span class="gold">2</span>. <span class="gold">一键爆金</span> - 获得传说级闪光宠物
+  <span class="blue">3</span>. 自定义宠物名字和个性
+  <span class="blue">4</span>. 恢复原始配置
+  <span class="purple">5</span>. 查看 God Roll 列表
+  <span class="red">0</span>. 退出
+
+<span class="blue">请输入编号: </span>2
+
+<span class="gold">════ 传说级闪光 God Roll 列表 (Top 20) ════</span>
+
+  <span class="gold">#1 </span> 猫头鹰 Owl           帽子:光环 Halo       眼睛:@ 最强:SNARK 100
+  <span class="gold">#2 </span> 乌龟 Turtle          帽子:王冠 Crown      眼睛:@ 最强:SNARK 100
+  <span class="gold">#3 </span> 鹅 Goose            帽子:毛线帽 Beanie    眼睛:° 最强:DEBUG 100
+  <span class="gold">#4 </span> 章鱼 Octopus         帽子:无             眼睛:× 最强:CHAOS 100
+  <span class="gold">#5 </span> 鸭子 Duck            帽子:巫师帽 Wizard    眼睛:◉ 最强:CHAOS 100
+  ...（共20只）
+
+<span class="blue">请输入编号 (1-20): </span>1
+
+你选择了: <span class="gold">#1 猫头鹰 Owl</span>
+  UUID: 3f6c5f24-86f4-4131-b02b-d8f1dd1c36b8
+
+<span class="gold">确认替换? (y/n): </span>y
+
+<span class="green">已备份到: ~/.claude-buddy-backups/claude_20260401.json</span>
+UUID 已更新, companion 已清除
+
+<span class="green">══════════════════════════════════════</span>
+<span class="green">  爆金成功! 你现在拥有传说级闪光宠物!</span>
+<span class="green">══════════════════════════════════════</span>
+
+下一步:
+  1. 重启 Claude Code
+  2. 输入 /buddy hatch 孵化新宠物
+  3. 输入 /buddy card 查看宠物卡片</div>
+</div>
+
+<h2>截图 6：全 18 种原版宠物 ASCII 精灵</h2>
+<p class="section-desc">Claude Code 源码中全部 18 种宠物的 ASCII 精灵预览</p>
+<div class="terminal">
+  <div class="terminal-header">
+    <div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div>
+    <span class="terminal-title">node — 全 18 种宠物展示</span>
+  </div>
+  <div class="terminal-body"><span class="prompt">$ </span>node show-all-species.js
+
+<span class="gold">╔═══════════════════════════════════════════════════════════════╗
+║           全 18 种原版宠物 ASCII 精灵展示                       ║
+╚═══════════════════════════════════════════════════════════════╝</span>
+
+--- <span class="blue">鸭子 (duck)</span> ---           --- <span class="blue">鹅 (goose)</span> ---
+    __                            (·>    
+  <(· )___                        ||     
+   (  ._>                       _(__)_   
+    `--´                          ^^^^    
+
+--- <span class="blue">猫 (cat)</span> ---             --- <span class="blue">龙 (dragon)</span> ---
+   /\_/\                        /^\  /^\  
+  ( ·   ·)                    <  ·  ·  > 
+  (  ω  )                     (   ~~   ) 
+  (")_("  )                      `-vvvv-´  
+
+--- <span class="blue">章鱼 (octopus)</span> ---       --- <span class="blue">猫头鹰 (owl)</span> ---
+   .----.                        /\  /\   
+  ( ·  · )                     ((·)(·))  
+  (______)                      (  ><  )  
+  /\/\/\/\                       `----´   
+
+--- <span class="blue">企鹅 (penguin)</span> ---       --- <span class="blue">乌龟 (turtle)</span> ---
+  .---.                          _,--._   
+  (·>·)                        ( ·  · )  
+ /(   )\                      /[______]\ 
+  `---´                         ``    ``  
+
+--- <span class="blue">幽灵 (ghost)</span> ---         --- <span class="blue">水豚 (capybara)</span> ---
+   .----.                       n______n  
+  / ·  · \                    ( ·    · ) 
+  |      |                    (   oo   ) 
+  ~`~``~`~                      `------´  
+
+--- <span class="blue">机器人 (robot)</span> ---       --- <span class="blue">蘑菇 (mushroom)</span> ---
+   .[||].                      .-o-OO-o-. 
+  [ ·  · ]                   (__________)
+  [ ==== ]                      |·  ·|   
+  `------´                      |____|   
+
+... 还有 果冻/蜗牛/六角恐龙/仙人掌/兔子/胖球</div>
+</div>
+
+<footer style="text-align:center;color:#8b949e;margin:40px 0;font-size:13px">
+  <p>Claude Code Buddy Guide | 所有工具运行于 macOS 终端 | Node.js v22</p>
+  <p>GitHub: <a href="https://github.com/bcefghj/claude-code-buddy-guide" style="color:#58a6ff">bcefghj/claude-code-buddy-guide</a></p>
+</footer>
+</body>
+</html>
