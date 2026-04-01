@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code Buddy 宠物系统完全指南</title>
+<style>
+:root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #e6edf3; --muted: #8b949e; --accent: #58a6ff; --gold: #f0c040; --green: #3fb950; --purple: #bc8cff; }
+[data-theme="light"] { --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de; --text: #1f2328; --muted: #656d76; --accent: #0969da; --gold: #bf8700; --green: #1a7f37; --purple: #8250df; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+.container { max-width: 860px; margin: 0 auto; padding: 20px; }
+header { text-align: center; padding: 60px 20px 40px; border-bottom: 1px solid var(--border); margin-bottom: 40px; }
+header h1 { font-size: 2.5em; margin-bottom: 10px; }
+header h1 span { color: var(--gold); }
+header p { color: var(--muted); font-size: 1.1em; }
+.theme-toggle { position: fixed; top: 16px; right: 16px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; cursor: pointer; color: var(--text); font-size: 14px; z-index: 100; }
+h2 { font-size: 1.8em; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid var(--border); }
+h3 { font-size: 1.3em; margin: 32px 0 12px; color: var(--accent); }
+p { margin: 12px 0; }
+code { background: var(--card); padding: 2px 6px; border-radius: 4px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.9em; }
+pre { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; overflow-x: auto; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 14px; line-height: 1.5; margin: 16px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+th, td { padding: 10px 14px; text-align: left; border: 1px solid var(--border); }
+th { background: var(--card); font-weight: 600; }
+tr:hover { background: var(--card); }
+.info-box { background: var(--card); border-left: 4px solid var(--accent); padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 16px 0; }
+.warn-box { background: var(--card); border-left: 4px solid var(--gold); padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 16px 0; }
+.sprite-demo { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 16px; margin: 24px 0; }
+.sprite-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; transition: transform 0.2s, border-color 0.2s; }
+.sprite-card:hover { transform: translateY(-4px); border-color: var(--accent); }
+.sprite-card pre { background: transparent; border: none; font-size: 11px; line-height: 1.2; margin: 8px 0; padding: 0; }
+.sprite-card .name { font-weight: 600; font-size: 13px; }
+.sprite-card .name-cn { font-size: 11px; color: var(--muted); }
+.rarity-bar { display: flex; height: 24px; border-radius: 6px; overflow: hidden; margin: 16px 0; }
+.rarity-bar > div { display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: #fff; }
+.prob-chart { margin: 24px 0; }
+.prob-row { display: flex; align-items: center; margin: 8px 0; }
+.prob-label { width: 100px; font-size: 13px; }
+.prob-bar-track { flex: 1; height: 20px; background: var(--card); border-radius: 4px; overflow: hidden; }
+.prob-bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: 11px; font-weight: bold; color: #fff; transition: width 1s ease; }
+.hat-gallery { display: flex; flex-wrap: wrap; gap: 12px; margin: 16px 0; }
+.hat-item { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; text-align: center; min-width: 100px; }
+.hat-item pre { background: transparent; border: none; font-size: 14px; margin: 4px 0; padding: 0; }
+.hat-item .label { font-size: 11px; color: var(--muted); }
+.step-list { counter-reset: step; }
+.step-list li { list-style: none; padding: 12px 0 12px 48px; position: relative; border-left: 2px solid var(--border); margin-left: 16px; }
+.step-list li::before { counter-increment: step; content: counter(step); position: absolute; left: -16px; top: 10px; width: 30px; height: 30px; background: var(--accent); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; }
+.toc { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin: 24px 0; }
+.toc a { color: var(--accent); text-decoration: none; display: block; padding: 4px 0; }
+.toc a:hover { text-decoration: underline; }
+footer { text-align: center; padding: 40px 0; color: var(--muted); border-top: 1px solid var(--border); margin-top: 60px; }
+footer a { color: var(--accent); text-decoration: none; }
+@media print {
+  .theme-toggle { display: none; }
+  body { background: #fff; color: #000; }
+  .container { max-width: 100%; }
+  pre { border: 1px solid #ccc; }
+  h2 { page-break-before: always; }
+  h2:first-of-type { page-break-before: auto; }
+}
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" onclick="toggleTheme()">🌙 / ☀️ 切换主题</button>
+
+<div class="container">
+<header>
+  <h1>Claude Code <span>Buddy</span></h1>
+  <p>宠物系统完全指南 | 2026年4月1日</p>
+  <p style="margin-top:8px;font-size:0.85em;color:var(--muted)">打印本页即可生成 PDF 版本 (Ctrl/Cmd + P)</p>
+</header>
+
+<div class="toc">
+  <strong>目录</strong>
+  <a href="#intro">1. 什么是 Buddy?</a>
+  <a href="#quickstart">2. 快速开始 (3分钟上手)</a>
+  <a href="#species">3. 宠物图鉴 (18种)</a>
+  <a href="#rarity">4. 稀有度系统</a>
+  <a href="#appearance">5. 外观系统</a>
+  <a href="#stats">6. 属性系统</a>
+  <a href="#algorithm">7. 生成算法揭秘</a>
+  <a href="#godroll">8. 爆金教程</a>
+  <a href="#custom">9. 自定义宠物</a>
+  <a href="#tools">10. 社区工具</a>
+  <a href="#faq">11. 常见问题</a>
+</div>
+
+<h2 id="intro">1. 什么是 Buddy?</h2>
+<p>Buddy 是 Claude Code 内置的虚拟宠物系统，于 2026 年 4 月 1 日（愚人节）正式上线。它类似于电子宠物 (Tamagotchi) 和扭蛋游戏 (Gacha)。</p>
+
+<div class="info-box">
+  <strong>核心特点:</strong>
+  <ul>
+    <li><strong>确定性生成</strong>: 你的宠物由账号UUID决定，同一账号永远同一只宠物</li>
+    <li><strong>18种物种</strong>: 鸭子、龙、猫头鹰、水豚等，每种都有ASCII艺术精灵</li>
+    <li><strong>5个稀有度</strong>: 普通(60%) → 传说(1%)，类似扭蛋概率</li>
+    <li><strong>闪光系统</strong>: 1%概率获得闪光版本</li>
+    <li><strong>AI个性</strong>: 宠物有AI生成的名字和独特个性</li>
+  </ul>
+</div>
+
+<h2 id="quickstart">2. 快速开始</h2>
+
+<h3>前提条件</h3>
+<p>Claude Code v2.1.89 或更高版本，已登录账号。</p>
+
+<h3>三步上手</h3>
+<ol class="step-list">
+  <li>在 Claude Code 中输入 <code>/buddy</code> 查看命令菜单</li>
+  <li>输入 <code>/buddy hatch</code> 孵化你的宠物</li>
+  <li>输入 <code>/buddy card</code> 查看宠物卡片，或 <code>/buddy pet</code> 抚摸宠物</li>
+</ol>
+
+<h3>命令一览</h3>
+<table>
+  <tr><th>命令</th><th>说明</th></tr>
+  <tr><td><code>/buddy hatch</code></td><td>孵化宠物 (首次使用)</td></tr>
+  <tr><td><code>/buddy pet</code></td><td>抚摸宠物 (触发2.5s爱心动画)</td></tr>
+  <tr><td><code>/buddy card</code></td><td>查看宠物卡片 (完整信息)</td></tr>
+</table>
+
+<h2 id="species">3. 宠物图鉴</h2>
+<p>共18种宠物，每种3帧动画。以下展示默认帧 (眼睛: ·):</p>
+
+<div class="sprite-demo" id="sprite-gallery"></div>
+
+<h2 id="rarity">4. 稀有度系统</h2>
+
+<h3>概率分布</h3>
+<div class="prob-chart">
+  <div class="prob-row"><span class="prob-label" style="color:var(--muted)">★ 普通</span><div class="prob-bar-track"><div class="prob-bar-fill" style="width:60%;background:var(--muted)">60%</div></div></div>
+  <div class="prob-row"><span class="prob-label" style="color:var(--green)">★★ 不凡</span><div class="prob-bar-track"><div class="prob-bar-fill" style="width:25%;background:var(--green)">25%</div></div></div>
+  <div class="prob-row"><span class="prob-label" style="color:var(--accent)">★★★ 稀有</span><div class="prob-bar-track"><div class="prob-bar-fill" style="width:10%;background:var(--accent)">10%</div></div></div>
+  <div class="prob-row"><span class="prob-label" style="color:var(--purple)">★★★★ 史诗</span><div class="prob-bar-track"><div class="prob-bar-fill" style="width:4%;background:var(--purple)">4%</div></div></div>
+  <div class="prob-row"><span class="prob-label" style="color:var(--gold)">★★★★★ 传说</span><div class="prob-bar-track"><div class="prob-bar-fill" style="width:1%;background:var(--gold)">1%</div></div></div>
+</div>
+
+<div class="rarity-bar">
+  <div style="width:60%;background:var(--muted)">普通 60%</div>
+  <div style="width:25%;background:var(--green)">不凡 25%</div>
+  <div style="width:10%;background:var(--accent)">稀有</div>
+  <div style="width:4%;background:var(--purple)"></div>
+  <div style="width:1%;background:var(--gold)"></div>
+</div>
+
+<table>
+  <tr><th>稀有度</th><th>概率</th><th>属性下限</th><th>帽子</th></tr>
+  <tr><td style="color:var(--muted)">★ Common</td><td>60%</td><td>5</td><td>无</td></tr>
+  <tr><td style="color:var(--green)">★★ Uncommon</td><td>25%</td><td>15</td><td>随机</td></tr>
+  <tr><td style="color:var(--accent)">★★★ Rare</td><td>10%</td><td>25</td><td>随机</td></tr>
+  <tr><td style="color:var(--purple)">★★★★ Epic</td><td>4%</td><td>35</td><td>随机</td></tr>
+  <tr><td style="color:var(--gold)">★★★★★ Legendary</td><td>1%</td><td>50</td><td>随机</td></tr>
+</table>
+
+<p><strong>闪光(Shiny):</strong> 任何稀有度都有 1% 概率为闪光。传说+闪光概率 = 0.01%（万分之一）。</p>
+
+<h2 id="appearance">5. 外观系统</h2>
+
+<h3>眼睛 (6种)</h3>
+<table>
+  <tr><th>符号</th><th>名称</th></tr>
+  <tr><td style="font-size:1.5em">·</td><td>圆点眼</td></tr>
+  <tr><td style="font-size:1.5em">✦</td><td>星星眼</td></tr>
+  <tr><td style="font-size:1.5em">×</td><td>叉叉眼</td></tr>
+  <tr><td style="font-size:1.5em">◉</td><td>靶心眼</td></tr>
+  <tr><td style="font-size:1.5em">@</td><td>漩涡眼</td></tr>
+  <tr><td style="font-size:1.5em">°</td><td>空心眼</td></tr>
+</table>
+
+<h3>帽子 (8种)</h3>
+<div class="hat-gallery">
+  <div class="hat-item"><pre>       </pre><div class="label">none 无</div></div>
+  <div class="hat-item"><pre>\^^^/</pre><div class="label">crown 王冠</div></div>
+  <div class="hat-item"><pre>[___]</pre><div class="label">tophat 礼帽</div></div>
+  <div class="hat-item"><pre> -+- </pre><div class="label">propeller 螺旋桨</div></div>
+  <div class="hat-item"><pre>(   )</pre><div class="label">halo 光环</div></div>
+  <div class="hat-item"><pre> /^\ </pre><div class="label">wizard 巫师帽</div></div>
+  <div class="hat-item"><pre>(___)</pre><div class="label">beanie 毛线帽</div></div>
+  <div class="hat-item"><pre> ,>  </pre><div class="label">tinyduck 小鸭子</div></div>
+</div>
+<div class="warn-box">普通(Common)稀有度的宠物不会获得帽子。不凡及以上从8种帽子中随机分配。</div>
+
+<h2 id="stats">6. 属性系统</h2>
+<table>
+  <tr><th>属性</th><th>英文</th><th>含义</th></tr>
+  <tr><td>调试力</td><td>DEBUGGING</td><td>发现和修复bug的能力</td></tr>
+  <tr><td>耐心值</td><td>PATIENCE</td><td>对待长编译时间的态度</td></tr>
+  <tr><td>混乱度</td><td>CHAOS</td><td>制造意外惊喜的能力</td></tr>
+  <tr><td>智慧值</td><td>WISDOM</td><td>代码审查和建议的质量</td></tr>
+  <tr><td>毒舌值</td><td>SNARK</td><td>吐槽代码的尖锐程度</td></tr>
+</table>
+<p>每只宠物有一个<strong>巅峰属性</strong>(Peak, 最高可达100)和一个<strong>短板属性</strong>(Dump, 较低)。</p>
+
+<h2 id="algorithm">7. 生成算法揭秘</h2>
+<div class="info-box">
+  <strong>流程:</strong> 账号UUID + 盐值("friend-2026-401") → FNV-1a哈希 → Mulberry32 PRNG → 依次确定稀有度、物种、眼睛、帽子、闪光、属性
+</div>
+<p>由于 Mulberry32 只有 32 位种子空间（约 42.9 亿个状态），用现代 CPU 暴力遍历只需几秒钟。这使得"爆金"成为可能。</p>
+<pre>
+// Mulberry32 伪随机数生成器
+function mulberry32(seed) {
+  let a = seed >>> 0;
+  return function() {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+</pre>
+
+<h2 id="godroll">8. 爆金教程</h2>
+
+<h3>方法一: 使用暴力破解工具</h3>
+<pre>
+# 查找传说级+闪光的UUID
+node tools/buddy-roller.js --rarity legendary --shiny
+
+# 查找指定物种
+node tools/buddy-roller.js --rarity legendary --species cat
+</pre>
+
+<h3>方法二: 使用在线查看器</h3>
+<p>打开 <code>tools/buddy-checker.html</code> 或访问 <a href="https://claudebuddychecker.netlify.app/">Claude Buddy Checker</a>。</p>
+
+<h3>方法三: 直接使用 God Roll UUID</h3>
+<table>
+  <tr><th>#</th><th>物种</th><th>帽子</th><th>最强属性</th><th>UUID</th></tr>
+  <tr><td>1</td><td>猫头鹰</td><td>光环</td><td>SNARK 100</td><td><code>3f6c5f24-86f4-4131-b02b-d8f1dd1c36b8</code></td></tr>
+  <tr><td>2</td><td>乌龟</td><td>王冠</td><td>SNARK 100</td><td><code>575d0192-5eec-4c6c-829c-c2ea74e52d5e</code></td></tr>
+  <tr><td>3</td><td>鹅</td><td>毛线帽</td><td>DEBUG 100</td><td><code>41c9d643-7b7f-49c5-b23d-d07700448db9</code></td></tr>
+  <tr><td>4</td><td>猫</td><td>光环</td><td>DEBUG 100</td><td><code>a7b74b5d-383b-4692-9ce8-39ab9c82425e</code></td></tr>
+  <tr><td>5</td><td>鸭子</td><td>巫师帽</td><td>CHAOS 100</td><td><code>4b9afb15-f776-4005-a5ea-81c4f0f5f340</code></td></tr>
+</table>
+<p>以上全部为 ★★★★★ 传说级 + ✦ 闪光！完整列表见 <code>god-rolls.md</code>。</p>
+
+<h3>如何替换宠物</h3>
+<ol class="step-list">
+  <li>备份: <code>cp ~/.claude.json ~/.claude.json.backup</code></li>
+  <li>编辑 <code>~/.claude.json</code>，修改 <code>oauthAccount.accountUuid</code></li>
+  <li>删除 <code>companion</code> 字段</li>
+  <li>重启 Claude Code, 输入 <code>/buddy hatch</code></li>
+</ol>
+<p>或使用一键脚本: <code>bash tools/quick-swap.sh &lt;UUID&gt;</code></p>
+
+<h2 id="custom">9. 自定义宠物</h2>
+<p>编辑 <code>~/.claude.json</code>:</p>
+<pre>
+{
+  "companion": {
+    "name": "哆啦A梦",
+    "personality": "从四次元口袋里掏出代码片段，最讨厌老鼠（和内存泄漏）。"
+  }
+}
+</pre>
+<p>详见 <code>custom/personality-editor.md</code> 获取更多主题化个性模板。</p>
+
+<h2 id="tools">10. 社区工具</h2>
+<table>
+  <tr><th>工具</th><th>说明</th><th>链接</th></tr>
+  <tr><td>Buddy Checker</td><td>在线查看宠物</td><td><a href="https://claudebuddychecker.netlify.app/">网站</a></td></tr>
+  <tr><td>variety.is Builder</td><td>自选外观+破解UUID</td><td><a href="https://variety.is/posts/claude-code-buddies/">网站</a></td></tr>
+  <tr><td>ccpet</td><td>状态栏宠物</td><td><a href="https://github.com/terryso/ccpet">GitHub</a></td></tr>
+  <tr><td>claude-pet</td><td>桌面宠物小部件</td><td><a href="https://github.com/IMMINJU/claude-pet">GitHub</a></td></tr>
+  <tr><td>baoyu-skills</td><td>宝玉技能包</td><td><a href="https://github.com/JimLiu/baoyu-skills">GitHub</a></td></tr>
+  <tr><td>naruto-skills</td><td>火影技能包</td><td><a href="https://github.com/zlh-428/naruto-skills">GitHub</a></td></tr>
+</table>
+
+<h2 id="faq">11. 常见问题</h2>
+
+<h3>Q: 修改UUID有风险吗？</h3>
+<p>目前社区反馈修改 accountUuid 不会影响功能，但建议先备份配置文件。</p>
+
+<h3>Q: 为什么看不到宠物？</h3>
+<p>确保 Claude Code >= v2.1.89，已输入 <code>/buddy hatch</code>，终端宽度足够。</p>
+
+<h3>Q: 传说+闪光的概率是多少？</h3>
+<p>1% × 1% = 0.01%（万分之一）。约42.9亿个种子中有约42,989,564个传说级。</p>
+
+<h3>Q: 宠物名字怎么生成的？</h3>
+<p>AI模型根据宠物属性和随机灵感词生成。失败时用预设名: Crumpet, Soup, Pickle, Biscuit, Moth, Gravy。</p>
+
+<footer>
+  <p>Claude Code Buddy 宠物系统完全指南</p>
+  <p><a href="https://variety.is/posts/claude-code-buddies/">参考资料</a> | <a href="https://claudebuddychecker.netlify.app/">在线查看器</a></p>
+  <p style="margin-top:8px">提示: 使用 Ctrl/Cmd + P 打印本页可生成 PDF 版本</p>
+</footer>
+</div>
+
+<script>
+function toggleTheme() {
+  document.documentElement.dataset.theme = document.documentElement.dataset.theme === 'light' ? '' : 'light';
+}
+
+const SPECIES_DATA = {
+  duck:{cn:'鸭子',sprite:'    __      \n  <(· )___  \n   (  ._>   \n    `--´    '},
+  goose:{cn:'鹅',sprite:'     (·>    \n     ||     \n   _(__)_   \n    ^^^^    '},
+  blob:{cn:'果冻',sprite:'   .----.   \n  ( ·  · )  \n  (      )  \n   `----´   '},
+  cat:{cn:'猫',sprite:'   /\\_/\\    \n  ( ·   ·)  \n  (  ω  )   \n  (")_(")   '},
+  dragon:{cn:'龙',sprite:'  /^\\  /^\\  \n <  ·  ·  > \n (   ~~   ) \n  `-vvvv-´  '},
+  octopus:{cn:'章鱼',sprite:'   .----.   \n  ( ·  · )  \n  (______)  \n  /\\/\\/\\/\\  '},
+  owl:{cn:'猫头鹰',sprite:'   /\\  /\\   \n  ((·)(·))  \n  (  ><  )  \n   `----´   '},
+  penguin:{cn:'企鹅',sprite:'  .---.     \n  (·>·)     \n /(   )\\    \n  `---´     '},
+  turtle:{cn:'乌龟',sprite:'   _,--._   \n  ( ·  · )  \n /[______]\\ \n  ``    ``  '},
+  snail:{cn:'蜗牛',sprite:' ·    .--.  \n  \\  ( @ )  \n   \\_`--´   \n  ~~~~~~~   '},
+  ghost:{cn:'幽灵',sprite:'   .----.   \n  / ·  · \\  \n  |      |  \n  ~`~``~`~  '},
+  axolotl:{cn:'六角恐龙',sprite:'}~(______)~{\n}~(· .. ·)~{\n  ( .--. )  \n  (_/  \\_)  '},
+  capybara:{cn:'水豚',sprite:'  n______n  \n ( ·    · ) \n (   oo   ) \n  `------´  '},
+  cactus:{cn:'仙人掌',sprite:' n  ____  n \n | |·  ·| | \n |_|    |_| \n   |    |   '},
+  robot:{cn:'机器人',sprite:'   .[||].   \n  [ ·  · ]  \n  [ ==== ]  \n  `------´  '},
+  rabbit:{cn:'兔子',sprite:'   (\\__/)   \n  ( ·  · )  \n =(  ..  )= \n  (")__(")  '},
+  mushroom:{cn:'蘑菇',sprite:' .-o-OO-o-. \n(__________)\n   |·  ·|   \n   |____|   '},
+  chonk:{cn:'胖球',sprite:'  /\\    /\\  \n ( ·    · ) \n (   ..   ) \n  `------´  '}
+};
+
+const gallery = document.getElementById('sprite-gallery');
+for (const [key, data] of Object.entries(SPECIES_DATA)) {
+  const card = document.createElement('div');
+  card.className = 'sprite-card';
+  card.innerHTML = `<pre>${data.sprite}</pre><div class="name">${key}</div><div class="name-cn">${data.cn}</div>`;
+  gallery.appendChild(card);
+}
+</script>
+</body>
+</html>

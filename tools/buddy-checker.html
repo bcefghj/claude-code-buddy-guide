@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code Buddy 宠物查看器 & 一键爆金</title>
+<style>
+:root {
+  --bg: #0d1117;
+  --card: #161b22;
+  --border: #30363d;
+  --text: #e6edf3;
+  --muted: #8b949e;
+  --accent: #58a6ff;
+  --gold: #f0c040;
+  --green: #3fb950;
+  --purple: #bc8cff;
+  --red: #f85149;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace; background: var(--bg); color: var(--text); min-height: 100vh; padding: 20px; }
+h1 { text-align: center; margin: 20px 0; font-size: 1.5em; }
+h1 span { color: var(--gold); }
+.container { max-width: 900px; margin: 0 auto; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin: 16px 0; }
+.input-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.input-row input { flex: 1; min-width: 200px; padding: 10px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: inherit; font-size: 14px; }
+.input-row input:focus { outline: none; border-color: var(--accent); }
+.btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 600; transition: all 0.2s; }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: #79c0ff; }
+.btn-gold { background: var(--gold); color: #000; }
+.btn-gold:hover { background: #f5d060; }
+.btn-copy { background: var(--border); color: var(--text); font-size: 12px; padding: 6px 12px; }
+.btn-copy:hover { background: var(--muted); }
+.sprite-box { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 18px; line-height: 1.3; text-align: center; padding: 20px; background: var(--bg); border-radius: 8px; margin: 16px 0; white-space: pre; min-height: 120px; display: flex; align-items: center; justify-content: center; }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; margin: 16px 0; }
+.stat-bar { display: flex; align-items: center; gap: 8px; }
+.stat-name { width: 80px; font-size: 12px; color: var(--muted); }
+.stat-value { width: 30px; text-align: right; font-weight: bold; }
+.stat-track { flex: 1; height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; }
+.stat-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+.info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin: 16px 0; }
+.info-item { background: var(--bg); padding: 12px; border-radius: 8px; text-align: center; }
+.info-label { font-size: 11px; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
+.info-value { font-size: 16px; font-weight: bold; }
+.rarity-common { color: var(--muted); }
+.rarity-uncommon { color: var(--green); }
+.rarity-rare { color: var(--accent); }
+.rarity-epic { color: var(--purple); }
+.rarity-legendary { color: var(--gold); }
+.shiny-badge { display: inline-block; padding: 2px 8px; background: linear-gradient(135deg, #f0c040, #ff6b6b, #58a6ff, #3fb950); border-radius: 4px; font-size: 12px; font-weight: bold; animation: shimmer 2s infinite; }
+@keyframes shimmer { 0%,100% { filter: brightness(1); } 50% { filter: brightness(1.3); } }
+.search-section { margin-top: 24px; }
+.search-options { display: flex; flex-wrap: wrap; gap: 12px; margin: 12px 0; }
+.search-options select { padding: 8px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: inherit; }
+.results-list { max-height: 400px; overflow-y: auto; }
+.result-item { display: flex; align-items: center; gap: 16px; padding: 12px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.2s; }
+.result-item:hover { background: var(--bg); }
+.result-sprite { font-size: 11px; line-height: 1.2; white-space: pre; min-width: 120px; }
+.result-info { flex: 1; }
+.result-uuid { font-size: 11px; color: var(--muted); word-break: break-all; }
+.tabs { display: flex; gap: 4px; margin-bottom: 16px; }
+.tab { padding: 8px 16px; border-radius: 8px 8px 0 0; cursor: pointer; background: var(--bg); color: var(--muted); border: 1px solid var(--border); border-bottom: none; }
+.tab.active { background: var(--card); color: var(--text); }
+.help-text { font-size: 12px; color: var(--muted); margin: 8px 0; }
+.progress { display: none; margin: 12px 0; }
+.progress-bar { height: 4px; background: var(--bg); border-radius: 2px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--accent); transition: width 0.3s; }
+footer { text-align: center; margin-top: 40px; color: var(--muted); font-size: 12px; }
+footer a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Claude Code <span>Buddy</span> 宠物查看器</h1>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('check')">查看宠物</div>
+    <div class="tab" onclick="switchTab('search')">一键爆金</div>
+  </div>
+
+  <div id="tab-check" class="card">
+    <p class="help-text">输入你的 accountUuid 或 userID，即时查看你的宠物。所有计算在浏览器本地完成，不会发送任何数据。</p>
+    <div class="input-row">
+      <input type="text" id="uuid-input" placeholder="输入 accountUuid 或 userID...">
+      <button class="btn btn-primary" onclick="checkBuddy()">查看</button>
+      <button class="btn btn-copy" onclick="document.getElementById('uuid-input').value=generateUUID();checkBuddy()">随机UUID</button>
+    </div>
+
+    <div id="result" style="display:none">
+      <div class="sprite-box" id="sprite-display"></div>
+      <div class="info-grid">
+        <div class="info-item"><div class="info-label">物种</div><div class="info-value" id="info-species"></div></div>
+        <div class="info-item"><div class="info-label">稀有度</div><div class="info-value" id="info-rarity"></div></div>
+        <div class="info-item"><div class="info-label">眼睛</div><div class="info-value" id="info-eye"></div></div>
+        <div class="info-item"><div class="info-label">帽子</div><div class="info-value" id="info-hat"></div></div>
+        <div class="info-item"><div class="info-label">闪光</div><div class="info-value" id="info-shiny"></div></div>
+      </div>
+      <div class="stats-grid" id="stats-display"></div>
+      <div style="text-align:center;margin-top:12px">
+        <button class="btn btn-copy" onclick="copyConfig()">复制配置JSON</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-search" class="card" style="display:none">
+    <p class="help-text">指定条件，自动搜索匹配的UUID。搜索在浏览器中运行，不消耗服务器资源。</p>
+    <div class="search-options">
+      <select id="s-rarity"><option value="">稀有度(任意)</option><option value="legendary">★★★★★ 传说</option><option value="epic">★★★★ 史诗</option><option value="rare">★★★ 稀有</option><option value="uncommon">★★ 不凡</option></select>
+      <select id="s-species"><option value="">物种(任意)</option></select>
+      <select id="s-eye"><option value="">眼睛(任意)</option></select>
+      <select id="s-hat"><option value="">帽子(任意)</option></select>
+      <label style="display:flex;align-items:center;gap:4px"><input type="checkbox" id="s-shiny"> ✦ 仅闪光</label>
+      <button class="btn btn-gold" onclick="startSearch()">开始爆金!</button>
+      <button class="btn btn-copy" id="stop-btn" onclick="stopSearch()" style="display:none">停止</button>
+    </div>
+    <div class="progress" id="progress">
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      <p class="help-text" id="progress-text"></p>
+    </div>
+    <div class="results-list" id="search-results"></div>
+  </div>
+
+  <footer>
+    <p>数据来源: Claude Code 源码逆向分析 | 所有计算在本地浏览器完成</p>
+    <p><a href="https://variety.is/posts/claude-code-buddies/" target="_blank">variety.is 逆向分析</a> · <a href="https://claudebuddychecker.netlify.app/" target="_blank">Claude Buddy Checker</a></p>
+  </footer>
+</div>
+
+<script>
+const RARITIES = ['common','uncommon','rare','epic','legendary'];
+const RARITY_WEIGHTS = {common:60,uncommon:25,rare:10,epic:4,legendary:1};
+const SPECIES = ['duck','goose','blob','cat','dragon','octopus','owl','penguin','turtle','snail','ghost','axolotl','capybara','cactus','robot','rabbit','mushroom','chonk'];
+const SPECIES_CN = {duck:'鸭子',goose:'鹅',blob:'果冻',cat:'猫',dragon:'龙',octopus:'章鱼',owl:'猫头鹰',penguin:'企鹅',turtle:'乌龟',snail:'蜗牛',ghost:'幽灵',axolotl:'六角恐龙',capybara:'水豚',cactus:'仙人掌',robot:'机器人',rabbit:'兔子',mushroom:'蘑菇',chonk:'胖球'};
+const EYES = ['·','✦','×','◉','@','°'];
+const HATS = ['none','crown','tophat','propeller','halo','wizard','beanie','tinyduck'];
+const HATS_CN = {none:'无',crown:'王冠',tophat:'礼帽',propeller:'螺旋桨',halo:'光环',wizard:'巫师帽',beanie:'毛线帽',tinyduck:'小鸭子'};
+const STAT_NAMES = ['DEBUGGING','PATIENCE','CHAOS','WISDOM','SNARK'];
+const SALT = 'friend-2026-401';
+const RARITY_FLOOR = {common:5,uncommon:15,rare:25,epic:35,legendary:50};
+const RARITY_STARS = {common:'★',uncommon:'★★',rare:'★★★',epic:'★★★★',legendary:'★★★★★'};
+const HAT_LINES = {none:'',crown:'   \\^^^/    ',tophat:'   [___]    ',propeller:'    -+-     ',halo:'   (   )    ',wizard:'    /^\\     ',beanie:'   (___)    ',tinyduck:'    ,>      '};
+
+const BODIES = {
+  duck:[[['            ','    __      ','  <({E} )___  ','   (  ._>   ','    `--´    ']],[['            ','    __      ','  <({E} )___  ','   (  ._>   ','    `--´~   ']],[['            ','    __      ','  <({E} )___  ','   (  .__>  ','    `--´    ']]],
+  goose:[[['            ','     ({E}>    ','     ||     ','   _(__)_   ','    ^^^^    ']],[['            ','    ({E}>     ','     ||     ','   _(__)_   ','    ^^^^    ']],[['            ','     ({E}>>   ','     ||     ','   _(__)_   ','    ^^^^    ']]],
+  blob:[[['            ','   .----.   ','  ( {E}  {E} )  ','  (      )  ','   `----´   ']],[['            ','  .------.  ',' (  {E}  {E}  ) ',' (        ) ','  `------´  ']],[['            ','    .--.    ','   ({E}  {E})   ','   (    )   ','    `--´    ']]],
+  cat:[[['            ','   /\\_/\\    ','  ( {E}   {E})  ','  (  ω  )   ','  (")_(")   ']],[['            ','   /\\_/\\    ','  ( {E}   {E})  ','  (  ω  )   ','  (")_(")~  ']],[['            ','   /\\-/\\    ','  ( {E}   {E})  ','  (  ω  )   ','  (")_(")   ']]],
+  dragon:[[['            ','  /^\\  /^\\  ',' <  {E}  {E}  > ',' (   ~~   ) ','  `-vvvv-´  ']],[['            ','  /^\\  /^\\  ',' <  {E}  {E}  > ',' (        ) ','  `-vvvv-´  ']],[['   ~    ~   ','  /^\\  /^\\  ',' <  {E}  {E}  > ',' (   ~~   ) ','  `-vvvv-´  ']]],
+  octopus:[[['            ','   .----.   ','  ( {E}  {E} )  ','  (______)  ','  /\\/\\/\\/\\  ']],[['            ','   .----.   ','  ( {E}  {E} )  ','  (______)  ','  \\/\\/\\/\\/  ']],[['     o      ','   .----.   ','  ( {E}  {E} )  ','  (______)  ','  /\\/\\/\\/\\  ']]],
+  owl:[[['            ','   /\\  /\\   ','  (({E})({E}))  ','  (  ><  )  ','   `----´   ']],[['            ','   /\\  /\\   ','  (({E})({E}))  ','  (  ><  )  ','   .----.   ']],[['            ','   /\\  /\\   ','  (({E})(-))  ','  (  ><  )  ','   `----´   ']]],
+  penguin:[[['            ','  .---.     ','  ({E}>{E})     ',' /(   )\\    ','  `---´     ']],[['            ','  .---.     ','  ({E}>{E})     ',' |(   )|    ','  `---´     ']],[['  .---.     ','  ({E}>{E})     ',' /(   )\\    ','  `---´     ','   ~ ~      ']]],
+  turtle:[[['            ','   _,--._   ','  ( {E}  {E} )  ',' /[______]\\ ','  ``    ``  ']],[['            ','   _,--._   ','  ( {E}  {E} )  ',' /[______]\\ ','   ``  ``   ']],[['            ','   _,--._   ','  ( {E}  {E} )  ',' /[======]\\ ','  ``    ``  ']]],
+  snail:[[['            ',' {E}    .--.  ','  \\  ( @ )  ','   \\_`--´   ','  ~~~~~~~   ']],[['            ','  {E}   .--.  ','  |  ( @ )  ','   \\_`--´   ','  ~~~~~~~   ']],[['            ',' {E}    .--.  ','  \\  ( @  ) ','   \\_`--´   ','   ~~~~~~   ']]],
+  ghost:[[['            ','   .----.   ','  / {E}  {E} \\  ','  |      |  ','  ~`~``~`~  ']],[['            ','   .----.   ','  / {E}  {E} \\  ','  |      |  ','  `~`~~`~`  ']],[['    ~  ~    ','   .----.   ','  / {E}  {E} \\  ','  |      |  ','  ~~`~~`~~  ']]],
+  axolotl:[[['            ','}~(______)~{','}~({E} .. {E})~{','  ( .--. )  ','  (_/  \\_)  ']],[['            ','~}(______){~','~}({E} .. {E}){~','  ( .--. )  ','  (_/  \\_)  ']],[['            ','}~(______)~{','}~({E} .. {E})~{','  (  --  )  ','  ~_/  \\_~  ']]],
+  capybara:[[['            ','  n______n  ',' ( {E}    {E} ) ',' (   oo   ) ','  `------´  ']],[['            ','  n______n  ',' ( {E}    {E} ) ',' (   Oo   ) ','  `------´  ']],[['    ~  ~    ','  u______n  ',' ( {E}    {E} ) ',' (   oo   ) ','  `------´  ']]],
+  cactus:[[['            ',' n  ____  n ',' | |{E}  {E}| | ',' |_|    |_| ','   |    |   ']],[['            ','    ____    ',' n |{E}  {E}| n ',' |_|    |_| ','   |    |   ']],[['n         n ',' |  ____  | ',' | |{E}  {E}| | ',' |_|    |_| ','   |    |   ']]],
+  robot:[[['            ','   .[||].   ','  [ {E}  {E} ]  ','  [ ==== ]  ','  `------´  ']],[['            ','   .[||].   ','  [ {E}  {E} ]  ','  [ -==- ]  ','  `------´  ']],[['     *      ','   .[||].   ','  [ {E}  {E} ]  ','  [ ==== ]  ','  `------´  ']]],
+  rabbit:[[['            ','   (\\__/)   ','  ( {E}  {E} )  ',' =(  ..  )= ','  (")__(")  ']],[['            ','   (|__/)   ','  ( {E}  {E} )  ',' =(  ..  )= ','  (")__(")  ']],[['            ','   (\\__/)   ','  ( {E}  {E} )  ',' =( .  . )= ','  (")__(")  ']]],
+  mushroom:[[['            ',' .-o-OO-o-. ','(__________)','   |{E}  {E}|   ','   |____|   ']],[['            ',' .-O-oo-O-. ','(__________)','   |{E}  {E}|   ','   |____|   ']],[['   . o  .   ',' .-o-OO-o-. ','(__________)','   |{E}  {E}|   ','   |____|   ']]],
+  chonk:[[['            ','  /\\    /\\  ',' ( {E}    {E} ) ',' (   ..   ) ','  `------´  ']],[['            ','  /\\    /|  ',' ( {E}    {E} ) ',' (   ..   ) ','  `------´  ']],[['            ','  /\\    /\\  ',' ( {E}    {E} ) ',' (   ..   ) ','  `------´~ ']]]
+};
+
+function mulberry32(seed) {
+  let a = seed >>> 0;
+  return function() {
+    a |= 0; a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function hashString(s) {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+
+function pick(rng, arr) { return arr[Math.floor(rng() * arr.length)]; }
+
+function rollRarity(rng) {
+  const total = 100; let roll = rng() * total;
+  for (const r of RARITIES) { roll -= RARITY_WEIGHTS[r]; if (roll < 0) return r; }
+  return 'common';
+}
+
+function rollStats(rng, rarity) {
+  const floor = RARITY_FLOOR[rarity];
+  const peak = pick(rng, STAT_NAMES);
+  let dump = pick(rng, STAT_NAMES);
+  while (dump === peak) dump = pick(rng, STAT_NAMES);
+  const stats = {};
+  for (const n of STAT_NAMES) {
+    if (n === peak) stats[n] = Math.min(100, floor + 50 + Math.floor(rng() * 30));
+    else if (n === dump) stats[n] = Math.max(1, floor - 10 + Math.floor(rng() * 15));
+    else stats[n] = floor + Math.floor(rng() * 40);
+  }
+  return stats;
+}
+
+function rollBuddy(userId) {
+  const key = userId + SALT;
+  const rng = mulberry32(hashString(key));
+  const rarity = rollRarity(rng);
+  return {
+    rarity, species: pick(rng, SPECIES), eye: pick(rng, EYES),
+    hat: rarity === 'common' ? 'none' : pick(rng, HATS),
+    shiny: rng() < 0.01, stats: rollStats(rng, rarity)
+  };
+}
+
+function renderSprite(buddy, frame) {
+  const frames = BODIES[buddy.species];
+  const body = frames[frame % frames.length][0].map(l => l.replaceAll('{E}', buddy.eye));
+  const lines = [...body];
+  if (buddy.hat !== 'none' && !lines[0].trim()) lines[0] = HAT_LINES[buddy.hat];
+  if (!lines[0].trim() && frames.every(f => !f[0][0].trim())) lines.shift();
+  return lines.join('\n');
+}
+
+function generateUUID() {
+  const h = '0123456789abcdef'; let u = '';
+  for (let i = 0; i < 36; i++) {
+    if (i===8||i===13||i===18||i===23) u+='-';
+    else if (i===14) u+='4';
+    else if (i===19) u+=h[Math.floor(Math.random()*4)+8];
+    else u+=h[Math.floor(Math.random()*16)];
+  }
+  return u;
+}
+
+let animFrame = 0; let animInterval = null; let currentBuddy = null; let currentUUID = '';
+
+function checkBuddy() {
+  const uuid = document.getElementById('uuid-input').value.trim();
+  if (!uuid) return;
+  currentUUID = uuid;
+  currentBuddy = rollBuddy(uuid);
+  const b = currentBuddy;
+  document.getElementById('result').style.display = 'block';
+  document.getElementById('info-species').textContent = `${SPECIES_CN[b.species]} (${b.species})`;
+  document.getElementById('info-rarity').className = `info-value rarity-${b.rarity}`;
+  document.getElementById('info-rarity').textContent = `${RARITY_STARS[b.rarity]} ${b.rarity}`;
+  document.getElementById('info-eye').textContent = b.eye;
+  document.getElementById('info-hat').textContent = `${HATS_CN[b.hat]} (${b.hat})`;
+  document.getElementById('info-shiny').innerHTML = b.shiny ? '<span class="shiny-badge">✦ SHINY ✦</span>' : 'No';
+
+  const statsHtml = STAT_NAMES.map(n => {
+    const v = b.stats[n];
+    const color = v >= 90 ? 'var(--gold)' : v >= 70 ? 'var(--green)' : v >= 50 ? 'var(--accent)' : 'var(--muted)';
+    return `<div class="stat-bar"><span class="stat-name">${n}</span><span class="stat-value" style="color:${color}">${v}</span><div class="stat-track"><div class="stat-fill" style="width:${v}%;background:${color}"></div></div></div>`;
+  }).join('');
+  document.getElementById('stats-display').innerHTML = statsHtml;
+
+  if (animInterval) clearInterval(animInterval);
+  animFrame = 0;
+  updateSprite();
+  animInterval = setInterval(() => { animFrame = (animFrame + 1) % 3; updateSprite(); }, 500);
+}
+
+function updateSprite() {
+  if (!currentBuddy) return;
+  const el = document.getElementById('sprite-display');
+  const cls = `rarity-${currentBuddy.rarity}`;
+  el.className = `sprite-box ${cls}`;
+  el.textContent = renderSprite(currentBuddy, animFrame);
+}
+
+function copyConfig() {
+  const config = JSON.stringify({
+    oauthAccount: { accountUuid: currentUUID },
+    companion: { name: "", personality: "", hatchedAt: Date.now() }
+  }, null, 2);
+  navigator.clipboard.writeText(config).then(() => alert('已复制！粘贴到 ~/.claude.json'));
+}
+
+let searching = false;
+function startSearch() {
+  if (searching) return;
+  searching = true;
+  document.getElementById('stop-btn').style.display = 'inline-block';
+  document.getElementById('progress').style.display = 'block';
+  document.getElementById('search-results').innerHTML = '';
+  const rarity = document.getElementById('s-rarity').value;
+  const species = document.getElementById('s-species').value;
+  const eye = document.getElementById('s-eye').value;
+  const hat = document.getElementById('s-hat').value;
+  const shiny = document.getElementById('s-shiny').checked;
+  let found = 0; let attempts = 0; const maxAttempts = 2000000;
+
+  function batch() {
+    if (!searching) return finish();
+    const batchSize = 10000;
+    for (let i = 0; i < batchSize && attempts < maxAttempts; i++) {
+      attempts++;
+      const uuid = generateUUID();
+      const b = rollBuddy(uuid);
+      if (rarity && b.rarity !== rarity) continue;
+      if (species && b.species !== species) continue;
+      if (eye && b.eye !== eye) continue;
+      if (hat && b.hat !== hat) continue;
+      if (shiny && !b.shiny) continue;
+      found++;
+      addResult(b, uuid);
+      if (found >= 20) { finish(); return; }
+    }
+    document.getElementById('progress-fill').style.width = `${(attempts/maxAttempts)*100}%`;
+    document.getElementById('progress-text').textContent = `已搜索 ${attempts.toLocaleString()} / ${maxAttempts.toLocaleString()} | 找到 ${found}`;
+    if (attempts >= maxAttempts) finish();
+    else requestAnimationFrame(batch);
+  }
+
+  function finish() {
+    searching = false;
+    document.getElementById('stop-btn').style.display = 'none';
+    document.getElementById('progress-text').textContent += ' (完成)';
+  }
+  requestAnimationFrame(batch);
+}
+
+function stopSearch() { searching = false; }
+
+function addResult(b, uuid) {
+  const div = document.createElement('div');
+  div.className = 'result-item';
+  div.innerHTML = `
+    <pre class="result-sprite rarity-${b.rarity}">${renderSprite(b, 0)}</pre>
+    <div class="result-info">
+      <strong class="rarity-${b.rarity}">${RARITY_STARS[b.rarity]}</strong>
+      ${SPECIES_CN[b.species]} | ${b.eye} | ${HATS_CN[b.hat]}
+      ${b.shiny ? '<span class="shiny-badge">✦</span>' : ''}
+      <div class="result-uuid">${uuid} <button class="btn btn-copy" onclick="event.stopPropagation();navigator.clipboard.writeText('${uuid}')">复制</button></div>
+    </div>`;
+  div.onclick = () => { document.getElementById('uuid-input').value = uuid; switchTab('check'); checkBuddy(); };
+  document.getElementById('search-results').appendChild(div);
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-check').style.display = tab === 'check' ? 'block' : 'none';
+  document.getElementById('tab-search').style.display = tab === 'search' ? 'block' : 'none';
+  document.querySelectorAll('.tab')[tab === 'check' ? 0 : 1].classList.add('active');
+}
+
+// populate selects
+const ss = document.getElementById('s-species');
+SPECIES.forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = `${SPECIES_CN[s]} (${s})`; ss.appendChild(o); });
+const se = document.getElementById('s-eye');
+EYES.forEach(e => { const o = document.createElement('option'); o.value = e; o.textContent = e; se.appendChild(o); });
+const sh = document.getElementById('s-hat');
+HATS.filter(h=>h!=='none').forEach(h => { const o = document.createElement('option'); o.value = h; o.textContent = `${HATS_CN[h]} (${h})`; sh.appendChild(o); });
+</script>
+</body>
+</html>
