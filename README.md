@@ -508,6 +508,32 @@ Top 12 传说级闪光金色宠物展示卡（完整20只见 [god-rolls.md](god-
 
 逐一验证 `god-rolls.md` 中全部 20 个 UUID，**全部通过** —— 均为 ★★★★★ Legendary + ✦ Shiny。
 
+### 全部 20 只金色宠物 ASCII 精灵截图
+
+每只金色宠物都有独特的 ASCII 精灵、帽子和眼睛组合：
+
+**#1-#4: 猫头鹰(光环)、乌龟(王冠)、鹅(毛线帽)、章鱼(无帽)**
+
+![God Roll #1-4](screenshots/godroll-ascii-01-04.png)
+
+**#5-#8: 鸭子(巫师帽)、鹅(巫师帽)、蘑菇(无帽)、章鱼(无帽)**
+
+![God Roll #5-8](screenshots/godroll-ascii-05-08.png)
+
+**#9-#12: 幽灵(巫师帽)、幽灵(螺旋桨)、鹅(毛线帽)、蘑菇(无帽)**
+
+![God Roll #9-12](screenshots/godroll-ascii-09-12.png)
+
+**#13-#16: 水豚(王冠)、乌龟(光环)、企鹅(小鸭子)、水豚(巫师帽)**
+
+![God Roll #13-16](screenshots/godroll-ascii-13-16.png)
+
+**#17-#20: 猫(光环)、蜗牛(礼帽)、机器人(巫师帽)、乌龟(礼帽)**
+
+![God Roll #17-20](screenshots/godroll-ascii-17-20.png)
+
+> 📋 完整的终端输出（含属性条）见 `screenshots/07-all-20-godrolls-ascii.txt`
+
 ### 15+ 种自定义精灵模板
 
 ![自定义精灵](screenshots/screenshot-04-custom-sprites.png)
